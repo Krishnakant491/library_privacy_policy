@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Account - Library App</title>
+    <meta name="description" content="Request account and data deletion for Library App. Enter your registered email to remove your data.">
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-light: #8B83FF;
+            --primary-dark: #4F46E5;
+            --secondary: #00D9FF;
+            --accent: #FF6B9D;
+            --bg-scaffold: #0A0E21;
+            --bg-card: #1A1F38;
+            --bg-card-hover: #222845;
+            --bg-surface: #141829;
+            --text-primary: #F0F0F5;
+            --text-secondary: #9CA3AF;
+            --text-muted: #6B7280;
+            --border: #2A2F4A;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-scaffold);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Ambient background glow effects */
+        .ambient-glow-1 {
+            position: fixed;
+            top: -10%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, rgba(108, 99, 255, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .ambient-glow-2 {
+            position: fixed;
+            bottom: -10%;
+            right: -10%;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(255, 107, 157, 0.08) 0%, rgba(0, 0, 0, 0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        header {
+            background-color: rgba(20, 24, 41, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 2rem;
+            height: 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #FFFFFF;
+            font-size: 1.1rem;
+        }
+
+        .logo-text span {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .header-link:hover {
+            color: var(--secondary);
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 3.5rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero-section h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #FFFFFF 30%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-section p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        /* Form Card */
+        .form-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--primary) 100%);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border);
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.25);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin: 2rem 0;
+        }
+
+        .checkbox-group input {
+            margin-top: 0.35rem;
+            accent-color: var(--accent);
+            width: 1.1rem;
+            height: 1.1rem;
+        }
+
+        .checkbox-group label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            cursor: pointer;
+            line-height: 1.4;
+        }
+
+        .btn-submit {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+            color: #FFFFFF;
+            border: none;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: opacity 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 4px 12px rgba(255, 107, 157, 0.2);
+        }
+
+        .btn-submit:hover {
+            opacity: 0.9;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.99);
+        }
+
+        /* Success Message styling */
+        .success-box {
+            display: none;
+            text-align: center;
+            padding: 1.5rem 0;
+        }
+
+        .success-icon {
+            font-size: 3.5rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .success-box h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 1rem;
+        }
+
+        .success-box p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .info-box {
+            background-color: rgba(255, 107, 157, 0.08);
+            border-left: 3px solid var(--accent);
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.4;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+            background-color: rgba(10, 14, 33, 0.9);
+            margin-top: 4rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Decorative Glow Elements -->
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+
+    <!-- Navigation Header -->
+    <header>
+        <a href="privacy_policy.html" class="logo">
+            <div class="logo-icon">L</div>
+            <div class="logo-text">Library <span>App</span></div>
+        </a>
+        <a href="privacy_policy.html" class="header-link">Back to Policy</a>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+        
+        <!-- Hero Title -->
+        <div class="hero-section">
+            <h1>Account Deletion</h1>
+            <p>Request permanent removal of your account, active memberships, and historical data from our databases.</p>
+        </div>
+
+        <!-- Form Card -->
+        <article class="form-card">
+            
+            <!-- Dynamic Success Box -->
+            <div id="successBox" class="success-box">
+                <div class="success-icon">✓</div>
+                <h2>Request Submitted Successfully!</h2>
+                <p>We have registered your deletion request. Our administrator will verify and manually wipe your profile, membership log, and transaction history from our active databases within <strong>7 business days</strong>.</p>
+                <p>A confirmation email will be sent to your email address once deletion is completed.</p>
+            </div>
+
+            <!-- Main Deletion Form -->
+            <form id="deleteForm" onsubmit="handleFormSubmit(event)">
+                
+                <div class="info-box">
+                    <strong>Please Note:</strong> Deleting your account will permanently erase your library check-in history, locker configurations, active subscription plans, and invoice history. This action cannot be undone.
+                </div>
+
+                <div class="form-group">
+                    <label for="fullName">Full Name *</label>
+                    <input type="text" id="fullName" required placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Registered Email Address *</label>
+                    <input type="email" id="email" required placeholder="Enter your registered account email">
+                </div>
+
+                <div class="form-group">
+                    <label for="mobile">Mobile Number *</label>
+                    <input type="text" id="mobile" required placeholder="Enter 10-digit mobile number">
+                </div>
+
+                <div class="form-group">
+                    <label for="reason">Reason for Deletion *</label>
+                    <select id="reason" required>
+                        <option value="" disabled selected>Select a reason</option>
+                        <option value="no-longer-using">I am no longer using this library/app</option>
+                        <option value="privacy">Privacy concerns</option>
+                        <option value="switching">Switching to a different service</option>
+                        <option value="other">Other reason</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="comments">Additional Details (Optional)</label>
+                    <textarea id="comments" rows="3" placeholder="Provide any details to help verify your profile..."></textarea>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="confirmDelete" required>
+                    <label for="confirmDelete">
+                        I understand that this action is permanent and completely irreversible. All my library history, active desk/locker bookings, and transaction invoices will be permanently deleted from the active servers.
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-submit">Submit Deletion Request</button>
+
+            </form>
+
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Library App. All rights reserved. Registered Support: krishnacodes200@gmail.com</p>
+    </footer>
+
+    <!-- Form Submit Handler Script -->
+    <script>
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            // Hide Deletion Form
+            document.getElementById('deleteForm').style.display = 'none';
+            // Show Success Message
+            document.getElementById('successBox').style.display = 'block';
+            
+            // Scroll to card top smoothly
+            window.scrollTo({
+                top: document.querySelector('.form-card').offsetTop - 100,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+
+</body>
+</html>
